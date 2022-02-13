@@ -3,21 +3,21 @@ package return_results
 import "github.com/OntoLedgy/ea_interop_service/code/i_dual_objects"
 
 type IDualRepositoryCreationResults struct { //class IDualRepositoryCreationResults:
-	i_dual_repository                      i_dual_objects.IRepository
-	i_dual_repository_creation_result_type IDualRepositoryCreationResultTypes
+	IDualRepository                   i_dual_objects.IRepository
+	IDualRepositoryCreationResultType IDualRepositoryCreationResultTypes
 }
 
 func ( //def __init__(
 	iDualRepositoryCreationResults *IDualRepositoryCreationResults) Initialise( //self,
 
-	i_dual_repository i_dual_objects.IRepository, //i_dual_repository: IRepository,
-	i_dual_repository_creation_result_type IDualRepositoryCreationResultTypes) { //i_dual_repository_creation_result_type: IDualRepositoryCreationResultTypes):
+	i_dual_repository i_dual_objects.IRepository, //IDualRepository: IRepository,
+	i_dual_repository_creation_result_type IDualRepositoryCreationResultTypes) { //IDualRepositoryCreationResultType: IDualRepositoryCreationResultTypes):
 
-	iDualRepositoryCreationResults.i_dual_repository = //self.i_dual_repository = \
-		i_dual_repository //i_dual_repository
+	iDualRepositoryCreationResults.IDualRepository = //self.IDualRepository = \
+		i_dual_repository //IDualRepository
 
-	iDualRepositoryCreationResults.i_dual_repository_creation_result_type = //self.i_dual_repository_creation_result_type = \
-		i_dual_repository_creation_result_type //i_dual_repository_creation_result_type
+	iDualRepositoryCreationResults.IDualRepositoryCreationResultType = //self.IDualRepositoryCreationResultType = \
+		i_dual_repository_creation_result_type //IDualRepositoryCreationResultType
 
 }
 
