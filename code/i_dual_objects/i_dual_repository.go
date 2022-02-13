@@ -1,17 +1,21 @@
 package i_dual_objects
 
+import "github.com/go-ole/go-ole"
+
 type IDualRepository struct {
-	repository IRepository
+	*IRepository
+	IDualRepositoryDispatch *ole.IDispatch
 }
 
 //def __init__(
 //self,
-//repository):
-//IRepository.__init__(
-//self)
-func (IDualRepository) Initialise(repository IRepository) {
-	repository = repository
 
+func (iDualRepository *IDualRepository) Initialise( //repository):
+	repository *IRepository,
+	dispatch *ole.IDispatch) {
+
+	iDualRepository.IRepository = repository
+	iDualRepository.IDualRepositoryDispatch = dispatch
 }
 
 //def custom_command(
