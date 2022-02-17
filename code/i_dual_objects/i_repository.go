@@ -1,8 +1,5 @@
 package i_dual_objects
 
-type IRepository struct {
-}
-
-func (iRepository *IRepository) Initialise() {
-
+type IRepository interface {
+	InitialiseRepository()
 }

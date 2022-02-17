@@ -7,9 +7,10 @@ type IDualRepositoryCreationResults struct { //class IDualRepositoryCreationResu
 	IDualRepositoryCreationResultType IDualRepositoryCreationResultTypes
 }
 
-func ( //def __init__(
-	iDualRepositoryCreationResults *IDualRepositoryCreationResults) Initialise( //self,
-
+//def __init__(
+func (
+	//self,
+	iDualRepositoryCreationResults *IDualRepositoryCreationResults) Initialise(
 	i_dual_repository i_dual_objects.IRepository, //IDualRepository: IRepository,
 	i_dual_repository_creation_result_type IDualRepositoryCreationResultTypes) { //IDualRepositoryCreationResultType: IDualRepositoryCreationResultTypes):
 

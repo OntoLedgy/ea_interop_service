@@ -2,6 +2,9 @@ package testing
 
 import (
 	"fmt"
+	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects"
+	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects/elements"
+	"github.com/OntoLedgy/ea_interop_service/code/processes"
 	"github.com/go-ole/go-ole"
 	"github.com/go-ole/go-ole/oleutil"
 	"testing"
@@ -12,21 +15,57 @@ func TestOleConnectivity(t *testing.T) {
 
 	ole.CoInitialize(0)
 
-	ea_app_object, _ := oleutil.CreateObject("EA.App")
-
-	ea_repository_object_i_dispatch, _ := ea_app_object.QueryInterface(ole.IID_IDispatch)
-
 	connection_string := "sparx_ea --- DBType=4;Connect=Provider=MSDASQL.1;Persist Security Info=False;Data Source=sparx_ea;LazyLoad=1;"
 
-	ea_repository_property := oleutil.MustGetProperty(ea_repository_object_i_dispatch, "Repository").ToIDispatch()
+	ea_app_object,
+		appOpenError :=
+		oleutil.CreateObject(
+			"EA.Repository")
 
-	oleutil.MustCallMethod(ea_repository_property, "OpenFile", connection_string).ToIDispatch()
+	if appOpenError != nil {
+		panic(appOpenError)
+	}
 
-	//ea_models := oleutil.MustGetProperty(ea_repository, "Models").ToIDispatch()
-	test_object := oleutil.MustCallMethod(ea_repository_property, "GetElementByID", 7524).ToIDispatch()
+	ea_repository_object_i_dispatch,
+		iDispatchError :=
+		ea_app_object.QueryInterface(
+			ole.IID_IDispatch)
 
-	test_object_element_id := oleutil.MustGetProperty(test_object, "ElementID").Val
-	fmt.Println(test_object_element_id)
+	if iDispatchError != nil {
+		panic(iDispatchError)
+	}
+
+	oleutil.MustCallMethod(
+		ea_repository_object_i_dispatch,
+		"OpenFile2",
+		connection_string, 1, 0)
+
+	test_object := oleutil.MustCallMethod(
+		ea_repository_object_i_dispatch,
+		"GetElementByID",
+		7523).ToIDispatch()
+
+	test_object_element_id :=
+		oleutil.MustGetProperty(
+			test_object,
+			"ElementID").Val
+
+	test_object2 := oleutil.MustCallMethod(
+		ea_repository_object_i_dispatch,
+		"GetElementByGuid",
+		"{B4298AF2-00A1-4e88-AFBB-07DB7B9F4CF5}").ToIDispatch()
+
+	test_object2_element_id :=
+		oleutil.MustGetProperty(
+			test_object2,
+			"ElementID").Val
+
+	fmt.Println(
+		test_object_element_id, test_object2_element_id)
+
+	ea_app_object.Release()
+	ea_repository_object_i_dispatch.Release()
+	ole.CoUninitialize()
 
 }
 
@@ -49,4 +88,35 @@ func TestOleConnectivityExcel(t *testing.T) {
 	excel.Release()
 
 	ole.CoUninitialize()
+}
+
+func TestEACreationResultsGetterConnectivity(t *testing.T) {
+
+	ole.CoInitialize(0)
+
+	connection_string :=
+		"sparx_ea --- DBType=4;" +
+			"Connect=Provider=MSDASQL.1;" +
+			"Persist Security Info=False;" +
+			"Data Source=sparx_ea;" +
+			"LazyLoad=1;"
+
+	var creationResults = processes.GetIDualRepositoryCreationResult(
+		connection_string)
+
+	fmt.Println(
+		creationResults.IDualRepositoryCreationResultType)
+
+	iDualRepository := creationResults.IDualRepository.(i_dual_objects.IDualRepository)
+
+	element :=
+		iDualRepository.GetElementByGuid("{B4298AF2-00A1-4e88-AFBB-07DB7B9F4CF5}")
+
+	test_object2_element_id :=
+		oleutil.MustGetProperty(
+			element.(elements.IDualElement).IElementDispatch,
+			"ElementID").Val
+
+	print(test_object2_element_id)
+
 }

@@ -1,21 +1,28 @@
 package i_dual_objects
 
-import "github.com/go-ole/go-ole"
+import (
+	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects/elements"
+	"github.com/go-ole/go-ole"
+	"github.com/go-ole/go-ole/oleutil"
+)
 
 type IDualRepository struct {
-	*IRepository
 	IDualRepositoryDispatch *ole.IDispatch
 }
 
 //def __init__(
 //self,
 
-func (iDualRepository *IDualRepository) Initialise( //repository):
-	repository *IRepository,
+func (iDualRepository IDualRepository) InitialiseRepository() {
+
+}
+
+func (iDualRepository *IDualRepository) SetIDualRepositoryDispatch(
+	//repository):
 	dispatch *ole.IDispatch) {
 
-	iDualRepository.IRepository = repository
-	iDualRepository.IDualRepositoryDispatch = dispatch
+	iDualRepository.IDualRepositoryDispatch =
+		dispatch
 }
 
 //def custom_command(
@@ -80,26 +87,46 @@ func (iDualRepository *IDualRepository) Initialise( //repository):
 //
 //return \
 //i_dual_connector
-//
+
 //def get_element_by_guid(
 //self,
-//element_ea_guid: str) \
-//-> IElement:
-//element = \
-//self.repository.GetElementByGuid(
-//element_ea_guid)
-//
-//if not element:
-//return \
-//INullElement()
-//
-//i_dual_element = \
-//IDualElement(
-//element = element)
-//
-//return \
-//i_dual_element
-//
+func (iDualRepository IDualRepository) GetElementByGuid(
+	//element_ea_guid: str) \
+	elementEaGuid string) elements.IElement { //-> IElement:
+
+	//element = \
+	element :=
+		//self.repository.GetElementByGuid(
+		oleutil.MustCallMethod(
+			iDualRepository.IDualRepositoryDispatch,
+			"GetElementByGuid",
+			elementEaGuid).
+			ToIDispatch()
+	//element_ea_guid)
+
+	//
+	//if not element:
+	if element == nil {
+		iNullElement := elements.INullElement{}
+		iNullElement.InitialiseElement()
+		//return \
+		//INullElement()
+		return iNullElement
+	}
+
+	//
+	//i_dual_element = \
+	iDualElement := elements.IDualElement{}
+	//IDualElement(
+	iDualElement.SetElementDispatch(element)
+	//element = element)
+
+	//return \
+	//i_dual_element
+	return iDualElement
+
+}
+
 //def get_element_by_id(
 //self,
 //element_id: int) \
