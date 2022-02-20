@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects"
 	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects/elements"
+	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects/packages"
 	"github.com/OntoLedgy/ea_interop_service/code/processes"
 	"github.com/go-ole/go-ole"
 	"github.com/go-ole/go-ole/oleutil"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -93,6 +95,7 @@ func TestOleConnectivityExcel(t *testing.T) {
 func TestEACreationResultsGetterConnectivity(t *testing.T) {
 
 	ole.CoInitialize(0)
+	defer ole.CoUninitialize()
 
 	connection_string :=
 		"sparx_ea --- DBType=4;" +
@@ -112,11 +115,77 @@ func TestEACreationResultsGetterConnectivity(t *testing.T) {
 	element :=
 		iDualRepository.GetElementByGuid("{B4298AF2-00A1-4e88-AFBB-07DB7B9F4CF5}")
 
-	test_object2_element_id :=
-		oleutil.MustGetProperty(
-			element.(elements.IDualElement).IElementDispatch,
-			"ElementID").Val
+	typeOfElements := reflect.TypeOf((*elements.IDualElement)(nil)).Elem()
 
-	print(test_object2_element_id)
+	typeOfElement := reflect.TypeOf(element)
+
+	if typeOfElement.String() == typeOfElements.String() {
+		iDUalElement := element.(elements.IDualElement)
+
+		elementID := iDUalElement.ElementID()
+		elementName := iDUalElement.ElementName()
+		iDUalElement.SetElementName("System Table Column Cells")
+
+		fmt.Printf("element id : {%v} \n element name : {%s}\n",
+			elementID,
+			elementName)
+	} else {
+		fmt.Printf("type of element is: {%s}, should be : {%s}\n", typeOfElement, typeOfElements)
+	}
+
+	oleutil.MustCallMethod(
+		iDualRepository.IDispatch,
+		"CloseFile")
+
+	iDualRepository.IDispatch.Release()
+
+}
+
+func TestEAPackages(t *testing.T) {
+
+	ole.CoInitialize(0)
+	defer ole.CoUninitialize()
+
+	connection_string :=
+		"sparx_ea --- DBType=4;" +
+			"Connect=Provider=MSDASQL.1;" +
+			"Persist Security Info=False;" +
+			"Data Source=sparx_ea;" +
+			"LazyLoad=1;"
+
+	var creationResults = processes.GetIDualRepositoryCreationResult(
+		connection_string)
+
+	fmt.Println(
+		creationResults.IDualRepositoryCreationResultType)
+
+	iDualRepository := creationResults.IDualRepository.(i_dual_objects.IDualRepository)
+
+	eaPackage :=
+		iDualRepository.GetPackageByID(38)
+
+	typeOfElements := reflect.TypeOf((*packages.IDualPackage)(nil)).Elem()
+
+	typeOfElement := reflect.TypeOf(eaPackage)
+
+	if typeOfElement.String() == typeOfElements.String() {
+		iDUalElement := eaPackage.(packages.IDualPackage)
+
+		packageID := iDUalElement.PackageID() //TODO
+		packageName := iDUalElement.PackageName()
+		//iDUalElement.SetPackageName("System Table Column Cells")
+
+		fmt.Printf("package id : {%v} \n package name : {%s}\n",
+			packageID,
+			packageName)
+	} else {
+		fmt.Printf("type of element is: {%s}, should be : {%s}\n", typeOfElement, typeOfElements)
+	}
+
+	oleutil.MustCallMethod(
+		iDualRepository.IDispatch,
+		"CloseFile")
+
+	iDualRepository.IDispatch.Release()
 
 }

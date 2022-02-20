@@ -10,7 +10,7 @@ type INullElement struct {
 //def __init__(
 //self):
 
-func (INullElement) InitialiseElement() {
+func (INullElement) Element() {
 
 }
 

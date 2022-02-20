@@ -2,17 +2,17 @@ package i_dual_objects
 
 import (
 	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects/elements"
+	"github.com/OntoLedgy/ea_interop_service/code/i_dual_objects/packages"
 	"github.com/go-ole/go-ole"
 	"github.com/go-ole/go-ole/oleutil"
 )
 
 type IDualRepository struct {
-	IDualRepositoryDispatch *ole.IDispatch
+	*ole.IDispatch
 }
 
 //def __init__(
 //self,
-
 func (iDualRepository IDualRepository) InitialiseRepository() {
 
 }
@@ -21,7 +21,7 @@ func (iDualRepository *IDualRepository) SetIDualRepositoryDispatch(
 	//repository):
 	dispatch *ole.IDispatch) {
 
-	iDualRepository.IDualRepositoryDispatch =
+	iDualRepository.IDispatch =
 		dispatch
 }
 
@@ -30,7 +30,7 @@ func (iDualRepository *IDualRepository) SetIDualRepositoryDispatch(
 //*args):
 //self.repository.CustomCommand(
 //*args)
-//
+
 //def get_attribute_by_guid(
 //self,
 //attribute_guid: str) \
@@ -49,7 +49,7 @@ func (iDualRepository *IDualRepository) SetIDualRepositoryDispatch(
 //
 //return \
 //i_dual_attribute
-//
+
 //def get_connector_by_guid(
 //self,
 //connector_ea_guid: str) \
@@ -68,7 +68,7 @@ func (iDualRepository *IDualRepository) SetIDualRepositoryDispatch(
 //
 //return \
 //i_dual_connector
-//
+
 //def get_connector_by_id(
 //self,
 //connector_id: int) \
@@ -98,7 +98,7 @@ func (iDualRepository IDualRepository) GetElementByGuid(
 	element :=
 		//self.repository.GetElementByGuid(
 		oleutil.MustCallMethod(
-			iDualRepository.IDualRepositoryDispatch,
+			iDualRepository.IDispatch,
 			"GetElementByGuid",
 			elementEaGuid).
 			ToIDispatch()
@@ -108,7 +108,7 @@ func (iDualRepository IDualRepository) GetElementByGuid(
 	//if not element:
 	if element == nil {
 		iNullElement := elements.INullElement{}
-		iNullElement.InitialiseElement()
+		iNullElement.Element()
 		//return \
 		//INullElement()
 		return iNullElement
@@ -117,8 +117,9 @@ func (iDualRepository IDualRepository) GetElementByGuid(
 	//
 	//i_dual_element = \
 	iDualElement := elements.IDualElement{}
+
 	//IDualElement(
-	iDualElement.SetElementDispatch(element)
+	iDualElement.IDispatch = element
 	//element = element)
 
 	//return \
@@ -129,23 +130,41 @@ func (iDualRepository IDualRepository) GetElementByGuid(
 
 //def get_element_by_id(
 //self,
-//element_id: int) \
-//-> IElement:
-//element = \
-//self.repository.GetElementByID(
-//element_id)
-//
-//if not element:
-//return \
-//INullElement()
-//
-//i_dual_element = \
-//IDualElement(
-//element = element)
-//
-//return \
-//i_dual_element
-//
+func (iDualRepository IDualRepository) GetElementById(
+	//element_id: int) \
+	elementId int) elements.IElement { //-> IElement:
+
+	//element = \
+	element :=
+		//self.repository.GetElementByID(
+		//element_id)
+		oleutil.MustCallMethod(
+			iDualRepository.IDispatch,
+			"GetElementByID",
+			elementId).
+			ToIDispatch()
+
+	//if not element:
+	if element == nil {
+		iNullElement := elements.INullElement{}
+		iNullElement.Element()
+		//return \
+		//INullElement()
+		return iNullElement
+
+	}
+
+	//i_dual_element = \
+	iDualElement := elements.IDualElement{}
+	//IDualElement(
+	iDualElement.IDispatch = element
+	//element = element)
+
+	//return \
+	//i_dual_element
+	return iDualElement
+}
+
 //def get_diagram_by_guid(
 //self,
 //diagram_ea_guid: str) \
@@ -183,7 +202,7 @@ func (iDualRepository IDualRepository) GetElementByGuid(
 //
 //return \
 //i_dual_diagram
-//
+
 //def get_package_by_guid(
 //self,
 //package_ea_guid: str) \
@@ -202,26 +221,49 @@ func (iDualRepository IDualRepository) GetElementByGuid(
 //
 //return \
 //i_dual_package
-//
+
 //def get_package_by_id(
 //self,
-//package_id: int) \
-//-> IPackage:
-//package = \
-//self.repository.GetPackageByID(
-//package_id)
-//
-//if not package:
-//return \
-//INullPackage()
-//
-//i_dual_package = \
-//IDualPackage(
-//package = package )
-//
-//return \
-//i_dual_package
-//
+func (iDualRepository IDualRepository) GetPackageByID(
+	//package_id: int) \
+	packageId int) packages.IPackage { //-> IPackage:
+
+	//package = \
+
+	dualPackage :=
+		oleutil.MustCallMethod(
+			iDualRepository.IDispatch,
+			//self.repository.GetPackageByID(
+			"GetPackageByID",
+			//package_id)
+			packageId).
+			ToIDispatch()
+
+	//if not package:
+	if dualPackage == nil {
+		iNullPackage := packages.INullPackage{}
+		iNullPackage.IPackage()
+		//return \
+		//INullPackage()
+		return iNullPackage
+
+	}
+
+	//i_dual_package = \
+	//IDualPackage(
+	//package = package )
+	iDualPackage := packages.IDualPackage{}
+
+	//IDualElement(
+	iDualPackage.IDispatch = dualPackage
+	//element = element)
+
+	//return \
+	//i_dual_package
+	return iDualPackage
+
+}
+
 //def exit(
 //self):
 //self.repository.Exit()

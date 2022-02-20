@@ -28,7 +28,7 @@ func (
 //self):
 //return \
 //self
-//
+
 //def __exit__(
 //self,
 //exception_type,

@@ -3,7 +3,7 @@ package elements
 //class IElement:
 type IElement interface {
 	//IElementDispatch *ole.IDispatch
-	InitialiseElement()
+	Element()
 }
 
 //
