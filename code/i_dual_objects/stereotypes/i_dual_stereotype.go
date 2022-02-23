@@ -4,8 +4,7 @@ import "github.com/go-ole/go-ole"
 
 //
 //from ea_interop_service_source.b_code.i_dual_objects.stereotypes.i_stereotype import IStereotype
-//
-//
+
 //class IDualStereotype(
 //IStereotype):
 type IDualStereotype struct {

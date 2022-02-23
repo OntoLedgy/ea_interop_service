@@ -3,29 +3,31 @@ package collections
 import "github.com/go-ole/go-ole"
 
 //from ea_interop_service_source.b_code.i_dual_objects.collections.i_dual_collection import IDualCollection
-//from ea_interop_service_source.b_code.i_dual_objects.elements.i_dual_element import IDualElement
+//from ea_interop_service_source.b_code.i_dual_objects.packages.i_dual_package import IDualPackage
 //
 //
-//class IDualElementCollection(
+//class IDualPackageCollection(
+//IDualCollection):
 
-type IDualElementCollection struct {
+type IDualPackageCollection struct {
 	IDualCollection
 }
 
-//IDualCollection):
+func (IDualPackageCollection) ICollection() {
 
-func (IDualElementCollection) ICollection() {}
+}
 
-func (iDualElementCollection IDualElementCollection) IDualElementCollection(
+func (iDualPackageCollection IDualPackageCollection) IDualPackageCollection(
 	eaCollection *ole.IDispatch) {
 
-	iDualElementCollection.IDispatch = eaCollection
+	iDualPackageCollection.IDispatch = eaCollection
 
 }
 
 //def __init__(
 //self,
 //ea_collection):
+
 //IDualCollection.__init__(
 //self,
 //ea_collection=ea_collection)
@@ -33,14 +35,14 @@ func (iDualElementCollection IDualElementCollection) IDualElementCollection(
 //def get_at(
 //self,
 //index: int) \
-//-> IDualElement:
+//-> IDualPackage:
 //collection_item = \
 //self.ea_collection.GetAt(
 //index)
 //
-//element = \
-//IDualElement(
-//element=collection_item)
+//package = \
+//IDualPackage(
+//package=collection_item)
 //
 //return \
-//element
+//package

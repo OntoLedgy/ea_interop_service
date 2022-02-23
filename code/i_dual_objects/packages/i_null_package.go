@@ -5,6 +5,7 @@ package packages
 //
 //class INullPackage(
 //IPackage):
+
 type INullPackage struct {
 }
 

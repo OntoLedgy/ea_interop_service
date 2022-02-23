@@ -11,11 +11,9 @@ import (
 //IDualConnectorCollection
 //from ea_interop_service_source.b_code.i_dual_objects.collections.i_dual_element_collection import IDualElementCollection
 //from ea_interop_service_source.b_code.i_dual_objects.packages.i_package import IPackage
-//
-//
+
 //class IDualPackage(
 //IPackage):
-
 type IDualPackage struct {
 	*ole.IDispatch
 }
@@ -23,10 +21,9 @@ type IDualPackage struct {
 //def __init__(
 //self,
 //package):
-//IPackage.__init__(
-//self)
-
 func (IDualPackage) IPackage() {
+	//IPackage.__init__(
+	//self)
 
 }
 
@@ -44,25 +41,20 @@ func (iDualPackage IDualPackage) IDualPackage(iDualPackageDispatch *ole.IDispatc
 func (iDualPackage IDualPackage) GetElements() collections.IDualElementCollection {
 
 	//elements = \
-	//IDualElementCollection(
-	//ea_collection=self.package.Elements)
-	//
-	packageElements :=
+	elements :=
+		collections.IDualElementCollection{}
+
+	elementsDispatch :=
+		//IDualElementCollection(
 		oleutil.MustGetProperty(
 			iDualPackage.IDispatch,
+			//ea_collection=self.package.Elements)
 			"Elements").ToIDispatch()
 
-	collection := collections.IDualCollection{}
-	collection.ICollection()
-	collection.IDualCollection(packageElements)
-
-	elements :=
-		collections.IDualElementCollection{
-			collection}
+	elements.IDualElementCollection(elementsDispatch)
 
 	//return \
 	//elements
-
 	return elements
 
 }
@@ -70,25 +62,35 @@ func (iDualPackage IDualPackage) GetElements() collections.IDualElementCollectio
 //def __get_name(
 //self) \
 //-> str:
-//element_name = \
-//self.package.Name
-
 func (iDualPackage IDualPackage) PackageName() string {
+
+	//element_name = \
+	//self.package.Name
+
 	packageName := oleutil.MustGetProperty(
 		iDualPackage.IDispatch,
 		"Name").ToString()
+
+	//return \
+	//element_name
 	return packageName
 }
 
-//return \
-//element_name
-//
 //def __set_name(
 //self,
-//name: str):
-//self.package.Name = \
-//name
-//
+func (iDualPackage IDualPackage) SetPackageName(
+	name string) {
+	//name: str):
+
+	//self.package.Name = \
+	//name
+	oleutil.MustPutProperty(
+		iDualPackage.IDispatch,
+		"Name",
+		name)
+
+}
+
 //def __get_flags(
 //self) \
 //-> str:
@@ -97,13 +99,13 @@ func (iDualPackage IDualPackage) PackageName() string {
 //
 //return \
 //flags
-//
+
 //def __set_flags(
 //self,
 //flags: str):
 //self.package.Flags = \
 //flags
-//
+
 //def __get_package_guid(
 //self) \
 //-> str:
@@ -112,11 +114,10 @@ func (iDualPackage IDualPackage) PackageName() string {
 //
 //return \
 //package_guid
-//
+
 //def __get_package_id(
 //self) \
 //-> int:
-
 func (iDualPackage IDualPackage) PackageID() int64 {
 
 	//package_id = \
@@ -125,6 +126,7 @@ func (iDualPackage IDualPackage) PackageID() int64 {
 		oleutil.MustGetProperty(
 			iDualPackage.IDispatch,
 			"PackageID").Val
+
 	//return \
 	//package_id
 
@@ -133,26 +135,55 @@ func (iDualPackage IDualPackage) PackageID() int64 {
 
 //def __get_packages(
 //self):
-//from ea_interop_service_source.b_code.i_dual_objects.collections.i_dual_package_collection import \
-//IDualPackageCollection
-//
-//packages = \
-//IDualPackageCollection(
-//ea_collection=self.package.Packages)
-//
-//return \
-//packages
-//
+func (iDualPackage IDualPackage) GetPackages() collections.IDualPackageCollection {
+
+	//from ea_interop_service_source.b_code.i_dual_objects.collections.i_dual_package_collection import \
+	//IDualPackageCollection
+
+	//packages = \
+	packages := collections.IDualPackageCollection{}
+
+	//IDualPackageCollection(
+	//ea_collection=self.package.Packages)
+	packagesDispatch :=
+		oleutil.MustGetProperty(
+			iDualPackage.IDispatch,
+			"Packages").ToIDispatch()
+
+	packages.IDualPackageCollection(
+		packagesDispatch)
+
+	//return \
+	//packages
+	return packages
+
+}
+
 //def __get_connectors(
 //self) \
 //-> IDualConnectorCollection:
-//connector_collection = \
-//IDualConnectorCollection(
-//ea_collection=self.package.Connectors)
-//
-//return \
-//connector_collection
-//
+func (iDualPackage IDualPackage) GetConnectors() collections.IDualConnectorCollection {
+
+	//connector_collection = \
+	connectorCollection := collections.IDualConnectorCollection{}
+
+	//IDualConnectorCollection(
+
+	connectorCollectionDispatch :=
+		oleutil.MustGetProperty(
+			iDualPackage.IDispatch,
+			//ea_collection=self.package.Connectors)
+			"Connectors").ToIDispatch()
+
+	connectorCollection.IDualConnectorCollection(
+		connectorCollectionDispatch)
+
+	//return \
+	//connector_collection
+
+	return connectorCollection
+}
+
 //def __get_stereotype_ex(
 //self) \
 //-> str:
@@ -161,21 +192,21 @@ func (iDualPackage IDualPackage) PackageID() int64 {
 //
 //return \
 //stereotype_ex
-//
+
 //def __set_stereotype_ex(
 //self,
 //stereotype_ex: str):
 //self.package.StereotypeEx = \
 //stereotype_ex
-//
+
 //def update(
 //self):
 //self.package.Update()
-//
+
 //def refresh(
 //self):
 //self.package.Refresh()
-//
+
 //elements = \
 //property(
 //fget=__get_elements)
